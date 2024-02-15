@@ -2,6 +2,7 @@ package com.example.poparticlestest.main.viewmodel
 
 import BaseViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.poparticlestest.main.datasource.entity.Results
 import com.example.poparticlestest.main.datasource.entity.ViewedArticle
 import com.example.poparticlestest.main.usecase.MainUseCase
 import kotlinx.coroutines.launch
@@ -39,7 +40,7 @@ class MainViewModel(
 
 
 
-    fun getEmptyList(): List<ViewedArticle>{
+    fun getEmptyList(): List<Results>{
         return emptyList()
     }
 

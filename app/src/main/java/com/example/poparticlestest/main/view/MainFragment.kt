@@ -3,16 +3,19 @@ package com.example.poparticlestest.main.view
 import BaseFragment
 import BaseViewModel
 import IOnItemClickViewHolder
-import android.os.Handler
+import android.content.Intent
 import android.view.View
+
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.poparticlestest.R
 import com.example.poparticlestest.core.base.util.NetworkUtils
 import com.example.poparticlestest.core.base.viewModel.Event
 import com.example.poparticlestest.core.base.viewModel.observe
 import com.example.poparticlestest.databinding.MainViewFragmentBinding
+import com.example.poparticlestest.main.datasource.entity.Results
 import com.example.poparticlestest.main.datasource.entity.ViewedArticle
 import com.example.poparticlestest.main.navigation.MainNavigation
+import com.example.poparticlestest.main.view.webview.WebViewActivity
 import com.example.poparticlestest.main.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -23,9 +26,8 @@ class MainFragment : BaseFragment<MainViewFragmentBinding>() {
     private val mainViewModel: MainViewModel by viewModel()
     private lateinit var adapter: MainAdapter
     private val navigator: MainNavigation by inject()
-    private var articles: List<ViewedArticle> = arrayListOf()
+    private var articles: List<Results> = arrayListOf()
 
-    // override methods
     override fun getViewModel(): BaseViewModel = mainViewModel
 
     override fun bindObserversToLiveData() {
@@ -44,37 +46,31 @@ class MainFragment : BaseFragment<MainViewFragmentBinding>() {
     }
 
 
-    private fun viewedArticles(event: Event<List<ViewedArticle>>) {
+    private fun viewedArticles(event: Event<ViewedArticle>) {
         event.getContentIfNotHandled().let { it ->
-            it.apply {
-                if (it?.size == 0) {
+            it?.apply {
+                if (it.results?.size == 0) {
                     bindingView.genericError.root.toVisible()
                     bindingView.genericError.tvActionServiceError.setOnClickListener {
                         bindingView.genericError.root.toGone()
-                        getData()
                     }
                 }
-                articles = it!!
-                adapter?.let {
+                articles = this.results
+                adapter.let {
                     it.dataList = articles
                     it.isDelete = false
                     it.notifyDataSetChanged()
                 }
             }
-            adapter!!.setData(articles)
+            adapter.setData(articles)
 
         }
     }
 
-    private fun getData() {
-        Handler().postDelayed({
-         //   mainViewModel.getarticles()
-        }, 2000)
-    }
+
 
     private fun initViews() {
         initViewAdapter()
-        getData()
         setView()
     }
 
@@ -125,9 +121,9 @@ class MainFragment : BaseFragment<MainViewFragmentBinding>() {
             dataList = arrayListOf(),
             onItemClickListener = (object : IOnItemClickViewHolder {
 
-                override fun onItemClick(caller: View?, position: Int, id: Int?) {
+                override fun onItemClick(caller: View?, position: Int, article: Results) {
                     if (isActionEnable()) {
-                        navigator.navigateToDetail(requireActivity(), id)  //DESARROLLAR
+                        onPickArticleScreen(article.url, article.title)
                     }
                 }
             })
@@ -135,6 +131,12 @@ class MainFragment : BaseFragment<MainViewFragmentBinding>() {
         bindingView.rvarticles.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         bindingView.rvarticles.adapter = adapter
+    }
+
+    private fun onPickArticleScreen(url: String, title: String) {
+        val intent = Intent(requireActivity(), WebViewActivity::class.java)
+        intent.putExtra("url", url)
+        requireActivity().startActivity(intent)
     }
 
 

@@ -50,9 +50,9 @@ class MainBindingDelegate : BaseBindingDelegate() {
         _hideUnknownError.value = Event(Unit)
     }
 
-    private val _showArticles = MutableLiveData<Event<List<ViewedArticle>>>()
-    val showArticles : LiveData<Event<List<ViewedArticle>>> get() = _showArticles
-    fun showlistOfArticles(listCharacters: List<ViewedArticle> ) {
+    private val _showArticles = MutableLiveData<Event<ViewedArticle>>()
+    val showArticles : LiveData<Event<ViewedArticle>> get() = _showArticles
+    fun showlistOfArticles(listCharacters: ViewedArticle ) {
         _showArticles.value = Event(listCharacters)
     }
 

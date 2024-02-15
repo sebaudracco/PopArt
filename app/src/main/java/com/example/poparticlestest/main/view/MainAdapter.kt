@@ -8,11 +8,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.poparticlestest.R
-import com.example.poparticlestest.main.datasource.entity.ViewedArticle
+import com.example.poparticlestest.main.datasource.entity.Results
 
 class MainAdapter(
     var isDelete: Boolean = false,
-    var dataList: List<ViewedArticle> = mutableListOf(),
+    var dataList: List<Results> = mutableListOf(),
     private val onItemClickListener: IOnItemClickViewHolder
 ) : RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 
@@ -26,18 +26,18 @@ class MainAdapter(
         val data = dataList[position]
         holder.textName.text = data.title
         holder.textDescription.text = data.abstract
-
-
-
-        holder.ivIcon.setOnClickListener {
-            onItemClickListener.onItemClick(it, position, data.id)
+        holder.textName.setOnClickListener {
+            onItemClickListener.onItemClick(it, position, data)
         }
     }
+
+
 
     override fun getItemCount(): Int {
         return dataList.size
     }
-    fun setData(characters: List<ViewedArticle>) {
+
+    fun setData(characters: List<Results>) {
         dataList = characters
         notifyDataSetChanged()
     }

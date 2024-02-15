@@ -95,6 +95,8 @@ dependencies {
     implementation ("org.mockito:mockito-core:2.25.0")
 
     implementation("com.airbnb.android:lottie:3.4.4")
+    implementation ("com.squareup.picasso:picasso:2.5.0")
+
 
 
 

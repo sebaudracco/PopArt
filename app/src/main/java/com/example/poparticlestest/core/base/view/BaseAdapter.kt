@@ -1,6 +1,8 @@
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.example.poparticlestest.core.base.view.BaseViewHolder
+import com.example.poparticlestest.main.datasource.entity.Results
 
 abstract class BaseAdapter<T>(
     private var dataList: List<T> = mutableListOf(),
@@ -24,5 +26,5 @@ abstract class BaseAdapter<T>(
 }
 
 interface IOnItemClickViewHolder {
-    fun onItemClick(caller: View?, position: Int, id: Int?)
+    fun onItemClick(caller: View?, position: Int, id: Results)
 }

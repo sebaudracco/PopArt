@@ -1,16 +1,19 @@
+package com.example.poparticlestest.core.base.view
 
+import IOnItemClickViewHolder
 import android.os.SystemClock
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.example.poparticlestest.main.datasource.entity.Results
 
 abstract class BaseViewHolder<T>(
     binding: ViewBinding,
     private val onItemClickListener: IOnItemClickViewHolder? = null
 ) : RecyclerView.ViewHolder(binding.root) {
-
+    lateinit var dataList: Results
     init {
         binding.root.setOnClickListener {
-            if (isActionEnable()) onItemClickListener?.onItemClick(it, adapterPosition,62710)
+            if (isActionEnable()) onItemClickListener?.onItemClick(it, adapterPosition, dataList)
         }
     }
 
