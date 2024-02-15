@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "58021675705",
+    "project_id": "poparticlestest",
+    "storage_bucket": "poparticlestest.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:58021675705:android:db162e1ea56b71e227d168",
+        "android_client_info": {
+          "package_name": "com.example.poparticlestest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6RUrVPzu0XqKYrHFunjqggBT6ButFdoE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
