@@ -1,4 +1,5 @@
 
+import com.example.poparticlestest.core.base.useCase.ErrorModel
 import com.google.gson.Gson
 
 
@@ -59,7 +60,7 @@ abstract class BasePresenterDelegate(private val bindingDelegate: BaseBindingDel
         bindingDelegate.showSuccessLogoutPostValue()
     }
 
-    /*fun showDefaultApiError(error: ErrorModel) {
+    fun showDefaultApiError(error: ErrorModel) {
         bindingDelegate.hideProgressViewPostValue()
         if (error.errorStatus == ErrorModel.ErrorStatus.CUSTOM_ERROR) {
             val exceptionModel = Gson().fromJson(error.message, ExceptionModel::class.java)
@@ -73,7 +74,7 @@ abstract class BasePresenterDelegate(private val bindingDelegate: BaseBindingDel
             ErrorModel.ErrorStatus.TIMEOUT -> bindingDelegate.showTimeOutErrorPostValue()
             else -> bindingDelegate.showGenericErrorPostValue(ExceptionModel())
         }
-    }*/
+    }
 
 
 }

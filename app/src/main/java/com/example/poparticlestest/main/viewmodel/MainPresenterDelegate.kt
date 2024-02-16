@@ -8,8 +8,7 @@ class MainPresenterDelegate (private val bindingDelegate: MainBindingDelegate) :
 
     fun showlistOfArticles(value: ViewedArticle) {
         bindingDelegate.hideProgressPostValue()
-        value?.let {
-            bindingDelegate.showlistOfArticles((it)) }
+        bindingDelegate.showlistOfArticles((value))
     }
 
     fun showUnknownErrorPostValue(){

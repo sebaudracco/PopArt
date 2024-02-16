@@ -14,6 +14,11 @@ class WebViewActivity
             binding.webView.loadUrl(url)
         }
 
+        val title = intent?.extras?.getString("title", "")
+        title?.let {
+            binding.toolbar.title = title
+        }
+
     }
 }
 

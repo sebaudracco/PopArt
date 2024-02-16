@@ -33,10 +33,7 @@ class MainFragment : BaseFragment<MainViewFragmentBinding>() {
     override fun bindObserversToLiveData() {
         observe(mainViewModel.bindingDelegate.showProgress, this::showProgress)
         observe(mainViewModel.bindingDelegate.hideProgress, this::hideProgress)
-        observe(mainViewModel.bindingDelegate.showNetworkError, this::showNetworkError)
-        observe(mainViewModel.bindingDelegate.hideNetworkError, this::hideNetworkError)
         observe(mainViewModel.bindingDelegate.showUnknownError, this::showUnknownError)
-        observe(mainViewModel.bindingDelegate.hideUnknownError, this::hideUnknownError)
         observe(mainViewModel.bindingDelegate.showArticles, this::viewedArticles)
     }
 
@@ -49,29 +46,48 @@ class MainFragment : BaseFragment<MainViewFragmentBinding>() {
     private fun viewedArticles(event: Event<ViewedArticle>) {
         event.getContentIfNotHandled().let { it ->
             it?.apply {
-                if (it.results?.size == 0) {
-                    bindingView.genericError.root.toVisible()
-                    bindingView.genericError.tvActionServiceError.setOnClickListener {
-                        bindingView.genericError.root.toGone()
+                it.results?.let { results ->
+                    if (results.isEmpty()) {
+                        getScreenError()
+                    } else {
+                        articles = results
+                        adapter.let {
+                            it.dataList = articles
+                            it.isDelete = false
+                            it.setData(articles)
+                            it.notifyDataSetChanged()
+                        }
+                        mainViewModel.save(it)
                     }
+                } ?: run {
+                    getScreenError()
                 }
-                articles = this.results
-                adapter.let {
-                    it.dataList = articles
-                    it.isDelete = false
-                    it.notifyDataSetChanged()
-                }
-            }
-            adapter.setData(articles)
 
+
+            }
         }
     }
 
+    private fun getScreenError() {
+        bindingView.genericError.root.toVisible()
+        bindingView.genericError.tvActionServiceError.setOnClickListener {
+            bindingView.genericError.root.toGone()
+        }
+    }
 
 
     private fun initViews() {
         initViewAdapter()
         setView()
+        search()
+    }
+
+    private fun search() {
+        if (checkBasicConnection()) {
+            mainViewModel.getArticlesByTime(query = NEWS_BY_MONTH)
+        } else {
+            mainViewModel.getSavedArticles()
+        }
     }
 
     private fun setView() {
@@ -86,30 +102,36 @@ class MainFragment : BaseFragment<MainViewFragmentBinding>() {
                 bindingView.btnDay.isEnabled = true
                 initViewAdapter()
                 mainViewModel.showProgressPostValue()
-                mainViewModel.getArticlesByTime(query = 30)
+                mainViewModel.getArticlesByTime(query = NEWS_BY_MONTH)
+            } else {
+                mainViewModel.getSavedArticles()
             }
         }
 
         bindingView.btnWeek.setOnClickListener {
-            if(checkBasicConnection()){
+            if (checkBasicConnection()) {
                 adapter.setData(mainViewModel.getEmptyList())
                 it.isEnabled = false
                 bindingView.btnMonth.isEnabled = true
                 bindingView.btnDay.isEnabled = true
                 initViewAdapter()
                 mainViewModel.showProgressPostValue()
-                mainViewModel.getArticlesByTime(query = 7)
+                mainViewModel.getArticlesByTime(query = NEWS_BY_WEEK)
+            } else {
+                mainViewModel.getSavedArticles()
             }
         }
 
         bindingView.btnDay.setOnClickListener {
-            if(checkBasicConnection()){
+            if (checkBasicConnection()) {
                 it.isEnabled = false
                 bindingView.btnWeek.isEnabled = true
                 bindingView.btnMonth.isEnabled = true
                 initViewAdapter()
                 mainViewModel.showProgressPostValue()
-                mainViewModel.getArticlesByTime(query = 1)
+                mainViewModel.getArticlesByTime(query = NEWS_BY_DAY)
+            } else {
+                mainViewModel.getSavedArticles()
             }
         }
     }
@@ -136,9 +158,9 @@ class MainFragment : BaseFragment<MainViewFragmentBinding>() {
     private fun onPickArticleScreen(url: String, title: String) {
         val intent = Intent(requireActivity(), WebViewActivity::class.java)
         intent.putExtra("url", url)
+        intent.putExtra("title", title)
         requireActivity().startActivity(intent)
     }
-
 
 
     private fun showProgress(event: Event<Unit>) {
@@ -157,21 +179,6 @@ class MainFragment : BaseFragment<MainViewFragmentBinding>() {
         }
     }
 
-    private fun showNetworkError(event: Event<Unit>) {
-        event.getContentIfNotHandled().let {
-            it?.apply {
-                bindingView.notNetwork.root.toVisible()
-            }
-        }
-    }
-
-    private fun hideNetworkError(event: Event<Unit>) {
-        event.getContentIfNotHandled().let {
-            it?.apply {
-                bindingView.notNetwork.root.toGone()
-            }
-        }
-    }
 
     private fun showUnknownError(event: Event<Unit>) {
         event.getContentIfNotHandled().let {
@@ -179,20 +186,15 @@ class MainFragment : BaseFragment<MainViewFragmentBinding>() {
                 bindingView.genericError.root.toVisible()
                 bindingView.genericError.tvActionServiceError.setOnClickListener {
                     bindingView.genericError.root.toGone()
+                    mainViewModel.getArticlesByTime(query = NEWS_BY_DAY)
                 }
             }
         }
     }
 
-    private fun hideUnknownError(event: Event<Unit>) {
-        event.getContentIfNotHandled().let {
-            it?.apply {
-                bindingView.genericError.root.toGone()
-            }
-        }
-    }
 
-    private fun checkBasicConnection(): Boolean{
+
+    private fun checkBasicConnection(): Boolean {
         val networkUtils = NetworkUtils(this.requireContext())
         return if (!networkUtils.isNetworkConnected()) {
             Snackbar.make(
@@ -201,8 +203,14 @@ class MainFragment : BaseFragment<MainViewFragmentBinding>() {
                 Snackbar.LENGTH_LONG
             ).show()
             false
-        }else{
+        } else {
             true
         }
+    }
+
+    companion object {
+        const val NEWS_BY_DAY = 1
+        const val NEWS_BY_WEEK = 7
+        const val NEWS_BY_MONTH = 30
     }
 }

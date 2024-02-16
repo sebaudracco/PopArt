@@ -7,7 +7,7 @@ import com.example.poparticlestest.core.base.viewModel.Event
 import com.example.poparticlestest.main.datasource.entity.ViewedArticle
 
 class MainBindingDelegate : BaseBindingDelegate() {
-    //region Generic actions
+
     //region Show progress view
     private val _showProgress = MutableLiveData<Event<Unit>>()
     val showProgress: LiveData<Event<Unit>> get() = _showProgress
@@ -22,20 +22,7 @@ class MainBindingDelegate : BaseBindingDelegate() {
         _hideProgress.value = Event(Unit)
     }
     //endregion
-    //region Show Network error
-    private val _showNetworkError = MutableLiveData<Event<Unit>>()
-    val showNetworkError: LiveData<Event<Unit>> get() = _showNetworkError
-    fun showNetworkErrorPostValue() {
-        _showNetworkError.value = Event(Unit)
-    }
-    //endregion
-    //region Hide Network error
-    private val _hideNetworkError = MutableLiveData<Event<Unit>>()
-    val hideNetworkError: LiveData<Event<Unit>> get() = _hideNetworkError
-    fun hideNetworkErrorPostValue() {
-        _hideNetworkError.value = Event(Unit)
-    }
-    //endregion
+
     //region Show Unknown error
     private val _showUnknownError = MutableLiveData<Event<Unit>>()
     val showUnknownError: LiveData<Event<Unit>> get() = _showUnknownError
@@ -43,21 +30,15 @@ class MainBindingDelegate : BaseBindingDelegate() {
         _showUnknownError.value = Event(Unit)
     }
     //endregion
-    //region Hide Unknown error
-    private val _hideUnknownError = MutableLiveData<Event<Unit>>()
-    val hideUnknownError: LiveData<Event<Unit>> get() = _hideUnknownError
-    fun hideUnknownErrorPostValue() {
-        _hideUnknownError.value = Event(Unit)
-    }
+
 
     private val _showArticles = MutableLiveData<Event<ViewedArticle>>()
     val showArticles : LiveData<Event<ViewedArticle>> get() = _showArticles
-    fun showlistOfArticles(listCharacters: ViewedArticle ) {
-        _showArticles.value = Event(listCharacters)
+    fun showlistOfArticles(articles: ViewedArticle ) {
+        _showArticles.value = Event(articles)
     }
 
 
-    //endregion
     //endregion
 
 }
